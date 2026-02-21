@@ -28,65 +28,57 @@ app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
   console.log('Contact form received:', { name, email, message });
 
-  // Sanitize inputs (automatic space removal for App Passwords)
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s/g, '') : null;
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const emailTo = process.env.EMAIL_TO || 'jarbouiachraf899@gmail.com';
 
-  if (emailUser && emailPass && !emailUser.includes('your-email')) {
-    console.log(`🚀 Production Mailer: Connecting as ${emailUser} via Port 587...`);
-
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // STARTTLS
-      auth: {
-        user: emailUser,
-        pass: emailPass,
-      },
-      tls: {
-        rejectUnauthorized: false
-      },
-      connectionTimeout: 30000,
-      greetingTimeout: 30000,
-      socketTimeout: 30000
-    });
+  if (resendApiKey) {
+    console.log('🚀 Production Mailer: Sending via Resend API...');
 
     try {
-      console.log('📡 Verifying SMTP connection (Port 587)...');
-      await transporter.verify();
-
-      console.log('📤 Sending mail...');
-      const info = await transporter.sendMail({
-        from: `"${name}" <${emailUser}>`,
-        to: emailUser,
-        subject: `🚀 Portfolio Message from ${name}`,
-        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-        html: `
-          <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #2563eb;">New Portfolio Message</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"/>
-            <p style="white-space: pre-wrap; color: #374151;">${message}</p>
-          </div>
-        `
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${resendApiKey}`
+        },
+        body: JSON.stringify({
+          from: 'Portfolio <onboarding@resend.dev>', // Default for free accounts
+          to: emailTo,
+          subject: `🚀 Portfolio Message from ${name}`,
+          reply_to: email,
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+              <h2 style="color: #2563eb;">New Portfolio Message</h2>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"/>
+              <p style="white-space: pre-wrap; color: #374151;">${message}</p>
+            </div>
+          `
+        })
       });
 
-      console.log('✅ Email sent successfully:', info.messageId);
-      return res.json({ success: true, message: 'Message sent successfully!' });
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('✅ Email sent via Resend:', result.id);
+        return res.json({ success: true, message: 'Message sent successfully!' });
+      } else {
+        console.error('❌ Resend API Error:', result);
+        throw new Error(result.message || 'API rejected request');
+      }
 
     } catch (error) {
-      console.error('❌ Mailer Error Detail:', error);
+      console.error('❌ Mailer Error Detail:', error.message);
       return res.status(500).json({
         success: false,
-        message: 'Gmail connection timed out or was rejected.',
-        details: error.message,
-        code: error.code
+        message: 'The email service failed.',
+        details: error.message
       });
     }
   } else {
-    console.error('⚠️ Configuration Error: Missing EMAIL_USER or EMAIL_PASS on the server.');
-    return res.status(400).json({ success: false, message: 'Server email credentials are not configured in environment variables.' });
+    console.error('⚠️ Configuration Error: RESEND_API_KEY missing on Render.');
+    return res.status(400).json({ success: false, message: 'Email API key is not configured.' });
   }
 });
 
