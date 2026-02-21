@@ -9,7 +9,19 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello from server!');
+  res.send('Hello from server! Server is UP.');
+});
+
+// Diagnostic route to test email config
+app.get('/api/test-email', async (req, res) => {
+  const emailUser = process.env.EMAIL_USER;
+  const emailPass = process.env.EMAIL_PASS;
+  res.json({
+    hasUser: !!emailUser,
+    userPrefix: emailUser ? emailUser.substring(0, 5) : 'none',
+    hasPass: !!emailPass,
+    port: process.env.PORT || 'default'
+  });
 });
 
 app.post('/api/contact', async (req, res) => {
