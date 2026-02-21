@@ -21,21 +21,26 @@ app.post('/api/contact', async (req, res) => {
   const emailPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s/g, '') : null;
 
   if (emailUser && emailPass && !emailUser.includes('your-email')) {
-    console.log(`🚀 Production Mailer: Attempting to send from ${emailUser}...`);
+    console.log(`🚀 Production Mailer: Connecting as ${emailUser} via Port 587...`);
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false, // STARTTLS
       auth: {
         user: emailUser,
         pass: emailPass,
       },
-      connectionTimeout: 10000, // 10s
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000
     });
 
     try {
-      console.log('📡 Verifying SMTP connection...');
+      console.log('📡 Verifying SMTP connection (Port 587)...');
       await transporter.verify();
 
       console.log('📤 Sending mail...');
@@ -45,12 +50,12 @@ app.post('/api/contact', async (req, res) => {
         subject: `🚀 Portfolio Message from ${name}`,
         text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
         html: `
-          <div style="font-family: sans-serif; padding: 20px;">
-            <h2>New Portfolio Message</h2>
+          <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+            <h2 style="color: #2563eb;">New Portfolio Message</h2>
             <p><strong>Name:</strong> ${name}</p>
             <p><strong>Email:</strong> ${email}</p>
-            <hr/>
-            <p>${message}</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"/>
+            <p style="white-space: pre-wrap; color: #374151;">${message}</p>
           </div>
         `
       });
@@ -59,10 +64,10 @@ app.post('/api/contact', async (req, res) => {
       return res.json({ success: true, message: 'Message sent successfully!' });
 
     } catch (error) {
-      console.error('❌ Mailer Error:', error.message);
+      console.error('❌ Mailer Error Detail:', error);
       return res.status(500).json({
         success: false,
-        message: 'The server could not send the email.',
+        message: 'Gmail connection timed out or was rejected.',
         details: error.message,
         code: error.code
       });
