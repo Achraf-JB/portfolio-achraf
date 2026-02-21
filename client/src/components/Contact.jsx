@@ -53,49 +53,49 @@ const Contact = () => {
                         <motion.h2
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
-                            className="text-5xl md:text-7xl font-black mb-10 leading-tight"
+                            className="text-4xl sm:text-5xl md:text-7xl font-black mb-8 md:mb-10 leading-tight"
                         >
                             Ready to <span className="text-blue-500">Collaborate?</span>
                         </motion.h2>
-                        <p className="text-slate-400 text-xl mb-12 max-w-md">
+                        <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-md">
                             I'm available for freelance projects and technical leadership roles. Let's build something exceptional together.
                         </p>
 
-                        <div className="space-y-8 mb-12">
-                            <div className="flex items-center gap-6 group">
-                                <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800 group-hover:bg-blue-600 transition-colors">
+                        <div className="space-y-6 md:space-y-8 mb-12">
+                            <div className="flex items-center gap-4 md:gap-6 group">
+                                <div className="p-3 md:p-4 bg-slate-900 rounded-2xl border border-slate-800 group-hover:bg-blue-600 transition-colors">
                                     <Mail className="text-blue-400 group-hover:text-white" />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Email Me</div>
-                                    <div className="text-xl font-bold">{resume.personal.email}</div>
+                                    <div className="text-[10px] md:text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Email Me</div>
+                                    <div className="text-lg md:text-xl font-bold break-all">{resume.personal.email}</div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 group">
-                                <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800 group-hover:bg-blue-600 transition-colors">
+                            <div className="flex items-center gap-4 md:gap-6 group">
+                                <div className="p-3 md:p-4 bg-slate-900 rounded-2xl border border-slate-800 group-hover:bg-blue-600 transition-colors">
                                     <Phone className="text-blue-400 group-hover:text-white" />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Call Me</div>
-                                    <div className="text-xl font-bold">{resume.personal.phone}</div>
+                                    <div className="text-[10px] md:text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Call Me</div>
+                                    <div className="text-lg md:text-xl font-bold">{resume.personal.phone}</div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 group">
+                            <div className="flex items-center gap-4 md:gap-6 group">
                                 <a
                                     href={resume.personal.links.medium}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-4 bg-slate-900 rounded-2xl border border-slate-800 group-hover:bg-blue-600 transition-colors"
+                                    className="p-3 md:p-4 bg-slate-900 rounded-2xl border border-slate-800 group-hover:bg-blue-600 transition-colors"
                                 >
                                     <BookOpen className="text-blue-400 group-hover:text-white" />
                                 </a>
                                 <div>
-                                    <div className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Read My Articles</div>
+                                    <div className="text-[10px] md:text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Read My Articles</div>
                                     <a
                                         href={resume.personal.links.medium}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-xl font-bold hover:text-blue-400 transition-colors"
+                                        className="text-lg md:text-xl font-bold hover:text-blue-400 transition-colors"
                                     >
                                         Medium Blog
                                     </a>
@@ -111,7 +111,7 @@ const Contact = () => {
                         className="relative"
                     >
                         <div className="absolute inset-0 bg-blue-600 blur-[100px] opacity-10"></div>
-                        <form onSubmit={handleSubmit} className="relative bg-slate-900/50 backdrop-blur-xl p-12 rounded-[40px] border border-slate-800 shadow-2xl">
+                        <form onSubmit={handleSubmit} className="relative bg-slate-900/50 backdrop-blur-xl p-6 sm:p-8 md:p-12 rounded-[30px] md:rounded-[40px] border border-slate-800 shadow-2xl">
                             <div className="space-y-6">
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div>

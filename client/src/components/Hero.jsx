@@ -44,12 +44,12 @@ const Hero = () => {
                 </div>
             </motion.div>
 
-            <div className="z-10 md:w-1/2 text-center md:text-left order-2 md:order-1">
+            <div className="z-10 md:w-1/2 text-center md:text-left order-2 md:order-1 px-4 md:px-0">
                 <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="inline-block px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full text-sm font-bold border border-blue-500/20 mb-6"
+                    className="inline-block px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full text-xs md:text-sm font-bold border border-blue-500/20 mb-6"
                 >
                     Specialist in DevOps & Automation
                 </motion.span>
@@ -58,7 +58,7 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-5xl md:text-8xl font-black mb-6 tracking-tight"
+                    className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[1.1]"
                 >
                     <span className="block text-white">Achraf</span>
                     <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">Jarboui</span>
@@ -68,7 +68,7 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="text-lg md:text-xl text-slate-400 mb-10 font-medium leading-relaxed max-w-lg mx-auto md:mx-0"
+                    className="text-base md:text-xl text-slate-400 mb-10 font-medium leading-relaxed max-w-lg mx-auto md:mx-0"
                 >
                     I architect scalable cloud infrastructures and build high-performance full-stack applications with an "automation-first" mindset.
                 </motion.p>
