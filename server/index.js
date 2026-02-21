@@ -16,48 +16,60 @@ app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
   console.log('Contact form received:', { name, email, message });
 
-  // Example using nodemailer
+  // Sanitize inputs (automatic space removal for App Passwords)
   const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
+  const emailPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s/g, '') : null;
 
   if (emailUser && emailPass && !emailUser.includes('your-email')) {
-    console.log('🚀 Production Mailer: Attempting connection via Gmail service...');
+    console.log(`🚀 Production Mailer: Attempting to send from ${emailUser}...`);
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: emailUser,
         pass: emailPass,
-      }
+      },
+      connectionTimeout: 10000, // 10s
     });
 
     try {
-      // Verify connection configuration
+      console.log('📡 Verifying SMTP connection...');
       await transporter.verify();
-      console.log('📡 Transporter is ready to take our messages');
 
-      console.log('📤 Sending mail to:', emailUser);
+      console.log('📤 Sending mail...');
       const info = await transporter.sendMail({
         from: `"${name}" <${emailUser}>`,
         to: emailUser,
-        subject: `Portfolio Contact: ${name}`,
+        subject: `🚀 Portfolio Message from ${name}`,
         text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-        html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong></p><p>${message}</p>`
+        html: `
+          <div style="font-family: sans-serif; padding: 20px;">
+            <h2>New Portfolio Message</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <hr/>
+            <p>${message}</p>
+          </div>
+        `
       });
+
       console.log('✅ Email sent successfully:', info.messageId);
       return res.json({ success: true, message: 'Message sent successfully!' });
+
     } catch (error) {
-      console.error('❌ Nodemailer Error Detail:', error);
+      console.error('❌ Mailer Error:', error.message);
       return res.status(500).json({
         success: false,
-        message: 'Email service failure',
-        error: error.message,
+        message: 'The server could not send the email.',
+        details: error.message,
         code: error.code
       });
     }
   } else {
-    console.log('Skipping email send: No valid credentials provided in .env');
-    return res.status(400).json({ success: false, message: 'Server email not configured' });
+    console.error('⚠️ Configuration Error: Missing EMAIL_USER or EMAIL_PASS on the server.');
+    return res.status(400).json({ success: false, message: 'Server email credentials are not configured in environment variables.' });
   }
 });
 
