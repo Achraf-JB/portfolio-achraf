@@ -21,26 +21,21 @@ app.post('/api/contact', async (req, res) => {
   const emailPass = process.env.EMAIL_PASS;
 
   if (emailUser && emailPass && !emailUser.includes('your-email')) {
-    console.log('🚀 Attempting to send email via Gmail SSL (Port 465)...');
+    console.log('🚀 Production Mailer: Attempting connection via Gmail service...');
+
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // Use SSL
+      service: 'gmail',
       auth: {
         user: emailUser,
         pass: emailPass,
-      },
-      debug: true, // Show debug output
-      logger: true, // Log to console
-      connectionTimeout: 20000,
-      greetingTimeout: 20000,
-      socketTimeout: 20000,
-      tls: {
-        rejectUnauthorized: false
       }
     });
 
     try {
+      // Verify connection configuration
+      await transporter.verify();
+      console.log('📡 Transporter is ready to take our messages');
+
       console.log('📤 Sending mail to:', emailUser);
       const info = await transporter.sendMail({
         from: `"${name}" <${emailUser}>`,
@@ -52,11 +47,13 @@ app.post('/api/contact', async (req, res) => {
       console.log('✅ Email sent successfully:', info.messageId);
       return res.json({ success: true, message: 'Message sent successfully!' });
     } catch (error) {
-      console.error('❌ Nodemailer Error:', error.message);
-      if (error.code === 'EAUTH') {
-        console.error('   Authentication failed. Check your App Password or if ENSI mail allows SMTP.');
-      }
-      return res.status(500).json({ success: false, message: 'Failed to send email', error: error.message });
+      console.error('❌ Nodemailer Error Detail:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Email service failure',
+        error: error.message,
+        code: error.code
+      });
     }
   } else {
     console.log('Skipping email send: No valid credentials provided in .env');
