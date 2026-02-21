@@ -16,12 +16,21 @@ const Contact = () => {
         setStatus('sending');
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            // Remove trailing slash if present
+            apiUrl = apiUrl.replace(/\/$/, '');
+
             const response = await fetch(`${apiUrl}/api/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'Server error' }));
+                throw new Error(errorData.message || 'Transmission failed');
+            }
+
             const data = await response.json();
             if (data.success) {
                 setStatus('success');
