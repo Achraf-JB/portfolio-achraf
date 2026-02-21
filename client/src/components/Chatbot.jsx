@@ -40,15 +40,62 @@ const Chatbot = () => {
     const getBotResponse = (msg) => {
         const lowerMsg = msg.toLowerCase();
 
-        if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) return "Greetings! Ready to explore Achraf's technical portfolio?";
-        if (lowerMsg.includes('contact') || lowerMsg.includes('email') || lowerMsg.includes('phone')) return `You can reach Achraf directly at ${resume.personal.email} or call ${resume.personal.phone}. He's usually very responsive!`;
-        if (lowerMsg.includes('stack') || lowerMsg.includes('tech') || lowerMsg.includes('tool')) return `His core stack includes ${resume.skills.languages.join(', ')}. In DevOps, he's a master of ${resume.skills.containers.join(', ')} and ${resume.skills.cicd[0]}.`;
-        if (lowerMsg.includes('experience') || lowerMsg.includes('work') || lowerMsg.includes('company')) return `He has extensive experience in DevOps, currently at ${resume.experience[0].company}. He has also worked at Creative Comet and Primatec Engineering.`;
-        if (lowerMsg.includes('project') || lowerMsg.includes('github')) return "Achraf has built complex CI/CD pipelines on Azure/AWS and even developed a voice-controlled chatbot at ENSI. His GitHub is full of automation scripts!";
-        if (lowerMsg.includes('devops') || lowerMsg.includes('cloud')) return "Automation is his passion. He is Azure AI certified and specializes in Kubernetes, Terraform, and Infrastructure as Code.";
-        if (lowerMsg.includes('hire') || lowerMsg.includes('why') || lowerMsg.includes('best')) return "Achraf is an excellent choice because he bridges the gap between clean code (Full Stack) and scalable infrastructure (DevOps). He is proactive, certified, and focused on delivering ROI through automation.";
+        // Helper to check if message contains any of the keywords
+        const contains = (keywords) => keywords.some(kw => lowerMsg.includes(kw));
 
-        return "That's a great question. While I'm still learning, I can tell you about Achraf's skills, professional experience, projects, or how to contact him. Try asking: 'What are his DevOps skills?'";
+        // 1. Identity & Greeting
+        if (contains(['who are you', 'what is your name', 'who created you'])) {
+            return `I'm Achraf's AI assistant! I'm here to help you navigate his portfolio and answer any questions about his background in DevOps and Software Engineering.`;
+        }
+        if (contains(['hello', 'hi', 'hey', 'greetings'])) {
+            return "Hey there! I'm ready to tell you anything you want to know about Achraf's work. What's on your mind?";
+        }
+
+        // 2. DevOps & Cloud (The core focus)
+        if (contains(['devops', 'cloud', 'infrastructure', 'ansible', 'terraform', 'kubernetes', 'docker', 'k8s'])) {
+            return `Achraf is a DevOps specialist. He's expert in ${resume.skills.containers.join(', ')} and automation with ${resume.skills.automation[0]}. He also holds an Azure AI Fundamentals certification!`;
+        }
+
+        // 3. Skills & Stack
+        if (contains(['skill', 'stack', 'tech', 'tool', 'language', 'program', 'java', 'python', 'javascript'])) {
+            return `Achraf's arsenal includes ${resume.skills.languages.join(', ')}. For web development, he uses ${resume.skills.web.slice(0, 3).join(', ')}. He's truly a bridge between code and infrastructure.`;
+        }
+
+        // 4. Experience & Work
+        if (contains(['experience', 'work', 'job', 'company', 'history', 'career'])) {
+            const currentJob = resume.experience[0];
+            return `Achraf is currently working as a ${currentJob.role} at ${currentJob.company}. He has a proven track record at companies like Creative Comet and Primatec Engineering.`;
+        }
+
+        // 5. Projects
+        if (contains(['project', 'build', 'made', 'created', 'portfolio', 'github'])) {
+            const p = resume.projects[0];
+            return `He has built some impressive things, like a ${p.name}. You can see his full source code on GitHub (link in the Contact section)!`;
+        }
+
+        // 6. Contact & Socials
+        if (contains(['contact', 'email', 'phone', 'hire', 'call', 'message', 'reach', 'linkedin', 'medium'])) {
+            return `You can reach him at ${resume.personal.email} or ${resume.personal.phone}. He's also active on LinkedIn and writes articles on Medium!`;
+        }
+
+        // 7. Goals & Interests (The new bio info)
+        if (contains(['goal', 'interest', 'focus', 'mission', 'future', 'cost', 'time'])) {
+            return `His mission is simple: automate everything to minimize costs and reduce time-to-market. He's currently focused on the intersection of DevSecOps, Cloud, and MLOps.`;
+        }
+
+        // 8. Education
+        if (contains(['education', 'university', 'study', 'degree', 'ensi', 'graduate'])) {
+            const edu = resume.education[0];
+            return `Achraf graduated from ${edu.school} with a degree in ${edu.degree} (${edu.period}).`;
+        }
+
+        // 9. Monitoring
+        if (contains(['monitoring', 'grafana', 'prometheus', 'observability', 'metrics', 'logging'])) {
+            return `He's proficient in setting up observability stacks using ${resume.skills.monitoring.join(' and ')}. He specializes in creating dashboards that give real-time visibility into infrastructure health.`;
+        }
+
+        // Default
+        return "That's interesting! I'm mostly trained to talk about Achraf's DevOps skills, his projects (like CI/CD pipelines), or how you can get in touch with him. Anything specific you'd like to know?";
     };
 
     return (
