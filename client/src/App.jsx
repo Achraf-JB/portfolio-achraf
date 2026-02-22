@@ -35,32 +35,40 @@ function App() {
         {/* Mobile Menu Overlay */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-0 bg-slate-950 z-[105] p-10 flex flex-col justify-center items-center gap-8 md:hidden text-center"
-            >
-              {[
-                { name: 'Home', href: '#home' },
-                { name: 'About', href: '#about' },
-                { name: 'Projects', href: '#projects' },
-                { name: 'Contact', href: '#contact' },
-              ].map((item, i) => (
-                <motion.a
-                  key={item.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  onClick={() => setIsMenuOpen(false)}
-                  href={item.href}
-                  className="text-4xl font-black text-white hover:text-blue-500 transition-colors tracking-tight"
-                >
-                  {item.name}
-                </motion.a>
-              ))}
-            </motion.div>
+            <>
+              {/* Dark backdrop to focus on menu */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMenuOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[101] md:hidden"
+              />
+
+              {/* Simple Slide-down menu */}
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="fixed top-[64px] left-0 w-full bg-slate-900 border-b border-white/10 z-[102] p-6 md:hidden flex flex-col gap-4 shadow-2xl"
+              >
+                {[
+                  { name: 'Home', href: '#home' },
+                  { name: 'About', href: '#about' },
+                  { name: 'Projects', href: '#projects' },
+                  { name: 'Contact', href: '#contact' },
+                ].map((item) => (
+                  <a
+                    key={item.name}
+                    onClick={() => setIsMenuOpen(false)}
+                    href={item.href}
+                    className="text-lg font-bold text-white hover:text-blue-400 py-2 transition-colors border-b border-white/5 last:border-0"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </nav>

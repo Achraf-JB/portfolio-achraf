@@ -6,7 +6,7 @@ import { ChevronRight } from 'lucide-react';
 
 const Hero = () => {
     return (
-        <section id="home" className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-slate-900 text-white p-6 md:p-12 relative overflow-hidden pt-20 md:pt-0">
+        <section id="home" className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-slate-900 text-white p-6 md:p-12 relative overflow-hidden pt-24 md:pt-32">
             {/* Background decoration */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
                 <div className="absolute top-[-5%] left-[-5%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-blue-600/10 rounded-full blur-[80px] md:blur-[150px]"></div>
